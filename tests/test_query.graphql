@@ -1,0 +1,4 @@
+{
+    hello
+    user { username }
+}
