@@ -2,9 +2,10 @@
 import logging
 
 import azure.functions as func
-from azure.functions import HttpRequest, HttpResponse
 from ariadne.constants import PLAYGROUND_HTML
-from .resolvers import parse_query
+from azure.functions import HttpRequest, HttpResponse
+
+from .query import parse_query
 
 
 async def main(graphql: HttpRequest) -> HttpResponse:

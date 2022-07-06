@@ -1,4 +1,17 @@
+"""
+Query a fixed cosmos db container.
+"""
 type Query {
-        hello: String!
-        user: User
+        """
+        Test field that returns Hello, <user string>    
+        """
+        hello: String
+        """
+        Query the actual Cosmos Container. Can be queried based on ID or address.
+        """
+        container(id: ID, address: String): [Container!]
+        """
+        The RU costs of the Cosmos query.
+        """
+        costs: Float
     }

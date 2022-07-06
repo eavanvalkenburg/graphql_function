@@ -1,0 +1,29 @@
+"""
+Cosmos DB SQL items always have these fields. More info here: https://docs.microsoft.com/en-us/azure/cosmos-db/account-databases-containers-items .
+"""
+interface CosmosSQL{
+    """
+    Either User-defined unique name in a logical partition or system-generated.
+    """
+    id: ID
+    """
+    System-generated unique identifier of the item.
+    """
+    _rid: String
+    """
+    System-generated addressable URI of the item.
+    """
+    _self: String
+    """
+    System-generated Entity tag used for optimistic concurrency control.
+    """
+    _etag: String
+    """
+    Attachments to the item.
+    """
+    _attachments: String
+    """
+    System-generated Timestamp of the last update of the item.
+    """
+    _ts: Int
+}

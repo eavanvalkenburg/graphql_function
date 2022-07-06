@@ -1,0 +1,9 @@
+"""
+Cosmos DB items always have these fields. More info here: https://docs.microsoft.com/en-us/azure/cosmos-db/account-databases-containers-items .
+"""
+interface Cosmos {
+    """
+    Either User-defined unique name in a logical partition or system-generated.
+    """
+    id: ID
+    }
