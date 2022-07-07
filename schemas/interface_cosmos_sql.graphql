@@ -7,6 +7,10 @@ interface CosmosSQL{
     """
     id: ID
     """
+    Partition Key, this is a crucial concept in CosmosDB.
+    """
+    partition_key: String
+    """
     System-generated unique identifier of the item.
     """
     _rid: String

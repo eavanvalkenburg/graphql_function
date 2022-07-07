@@ -1,0 +1,9 @@
+{
+  container {
+    address
+    id
+    timestamp
+    partition_key
+  }
+  costs
+}

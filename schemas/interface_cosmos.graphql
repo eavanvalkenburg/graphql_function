@@ -6,4 +6,8 @@ interface Cosmos {
     Either User-defined unique name in a logical partition or system-generated.
     """
     id: ID
+    """
+    Partition Key, this is a crucial concept in CosmosDB.
+    """
+    partition_key: String
     }

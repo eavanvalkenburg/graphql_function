@@ -1,0 +1,33 @@
+"""
+Create a new item in Cosmos.
+"""
+type Mutation {
+    container(input: ContainerInput!): UpsertPayload!
+    """
+    The RU costs of the Cosmos query.
+    """
+    costs: Float
+}
+
+type UpsertPayload {
+    status: Boolean!
+    error: String
+    partition_key: String
+    address: String
+    id: ID
+}
+
+
+"""
+The new to create item, with address and optional ID, if no ID is given, uuid4 is used.
+"""
+input ContainerInput {
+    """
+    New address to be added.
+    """
+    address: String
+    """
+    UUID of the item, if not supplied a uuid will be generated.
+    """
+    id: ID
+}

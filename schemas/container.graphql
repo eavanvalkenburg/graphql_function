@@ -3,6 +3,7 @@ The sample db container has an ID and address.
 """
 type Container implements CosmosSQL {
     id: ID
+    partition_key: String
     """
     Address of the item, is also the partition_key.
     """
@@ -12,4 +13,5 @@ type Container implements CosmosSQL {
     _etag: String
     _attachments: String
     _ts: Int
+    timestamp: String
 }
