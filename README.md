@@ -10,11 +10,11 @@ Queries are done against the schema, where `address` and `ID` are fields that ca
 
 The mutation function uses the `upsert_item` function in Cosmos, so if the `ID` is given (`address` is mandatory), if you change the `address` it will actually create a new item in the updated partition, if you change something other then the partition key (`address` in this case) it will update the item.
 
-For all details of how to implement the graphql refer to the [Ariadne] documentation. But there are three places that need to be updated to adopt this to your schema.
+For all details of how to implement the graphql refer to the [Ariadne] documentation. But there are four places that need to be updated to adopt this to your schema.
 
 1. Schema's in the [schema](schema//) folder: 
-  * the container.graphql (also shown below) is the most important one to adopt, no need to change the name `Container`, it is internal only.
-  * the query and mutation schema's, remember that the return type of the Query is Container, the word `container` (no cap) can be changed to represent the type of object you want to query.
+    1. the container.graphql (also shown below) is the most important one to adopt, no need to change the name `Container`, it is internal only.
+    1. the query and mutation schema's, remember that the return type of the Query is Container, the word `container` (no cap) can be changed to represent the type of object you want to query.
 1. [Resolvers](graphql//resolvers//), you only need a resolver if you want to change a field's representation, if you want to create additional fields, or if you have to change the name between the item in Cosmos and the field name in the query, the [resolvers_specific.py](graphql//resolvers//resolvers_specific.py) file has an example of a resolver that takes the timestamp, converts it into a local timestamp and returns that as a ISO formatted field.
 1. [Schema.py](graphql//schema.py) here the resolvers are added to the ObjectTypes (Ariadne specific thing) and linked to specific fields. 
 1. Environment variables, if running this locally using the azure-func-tools, create a `local.settings.json` based on the [sample](sample.settings.json), if necessary (for instance if you want to use AAD auth with Cosmos instead of Key-based), change the way these are imported and used in [const](graphql//const.py) and [cosmos](graphql//cosmos.py). If you deploy this function to Azure make sure to sync the settings (VSCode can do this with a command) to the app settings there so that it works.
