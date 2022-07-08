@@ -60,6 +60,7 @@ mutation {
 ```
 
 ### Introspection
+[Introspection documentation](https://graphql.org/learn/introspection/)
 ```graphql
 {
   __type(name: "Container") {
