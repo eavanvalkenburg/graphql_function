@@ -15,7 +15,9 @@ from ariadne import (
 from .const import (
     COSMOS_FIELD_COSTS,
     COSMOS_FIELD_PARTITION_KEY,
+    COSMOS_FIELD_PARTITION_KEY_FIELD,
     COSMOS_FIELD_TIMESTAMP,
+    CONTAINER_NAME,
 )
 from .resolvers import (
     resolve_cosmos_mutation,
@@ -23,6 +25,7 @@ from .resolvers import (
     resolve_costs,
     resolve_partition_key,
     resolve_timestamp,
+    resolve_partition_key_field,
     # resolve_timestamp_timezone,
 )
 from .cosmos import cosmos
@@ -41,8 +44,9 @@ mutation.set_field("container", resolve_cosmos_mutation)
 mutation.set_field(COSMOS_FIELD_COSTS, resolve_costs)
 
 # Define the actual objects in CosmosDB
-container = ObjectType("Container")
+container = ObjectType(CONTAINER_NAME)
 container.set_field(COSMOS_FIELD_PARTITION_KEY, resolve_partition_key)
+container.set_field(COSMOS_FIELD_PARTITION_KEY_FIELD, resolve_partition_key_field)
 container.set_field(COSMOS_FIELD_TIMESTAMP, resolve_timestamp)
 # container.set_field(COSMOS_FIELD_TIMESTAMP, resolve_timestamp_timezone)
 

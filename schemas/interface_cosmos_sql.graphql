@@ -7,9 +7,13 @@ interface CosmosSQL{
     """
     id: ID
     """
-    Partition Key, this is a crucial concept in CosmosDB.
+    Partition Key, this is a crucial concept in CosmosDB, will have the same value as the field that is the partition_key.
     """
     partition_key: String
+    """
+    Partition Key Field name, this is a crucial concept in CosmosDB, will have the same value as the field that is the partition_key.
+    """
+    partition_key_field: String
     """
     System-generated unique identifier of the item.
     """
@@ -30,4 +34,8 @@ interface CosmosSQL{
     System-generated Timestamp of the last update of the item.
     """
     _ts: Int
+    """
+    ISO Formatted Timestamp of the last update of the item, based on _ts.
+    """
+    timestamp: String
 }

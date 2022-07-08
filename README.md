@@ -48,9 +48,8 @@ mutation {
       }
     }
   }
-}```
-
-
+}
+```
 
 [GraphQL]: https://graphql.org/
 [Ariadne]: https://ariadnegraphql.org/

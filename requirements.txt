@@ -8,3 +8,4 @@ aiohttp
 ariadne
 black
 isort
+pytz

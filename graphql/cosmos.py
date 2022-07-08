@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import functools
-import os
 from collections.abc import Awaitable
 from dataclasses import dataclass
 from typing import Any
@@ -11,11 +10,11 @@ from uuid import uuid4
 from azure.cosmos.aio import ContainerProxy, CosmosClient, DatabaseProxy
 
 from .const import (
-    ENV_COSMOS_CONTAINER_FIELD,
-    ENV_COSMOS_DATABASE_FIELD,
-    ENV_COSMOS_KEY_FIELD,
-    ENV_COSMOS_PARTITION_KEY_FIELD,
-    ENV_COSMOS_URL_FIELD,
+    ENV_COSMOS_DATABASE,
+    ENV_COSMOS_KEY,
+    ENV_COSMOS_URL,
+    ENV_COSMOS_CONTAINER,
+    ENV_COSMOS_PARTITION_KEY,
 )
 
 
@@ -32,20 +31,15 @@ class CosmosInfo:
     @classmethod
     def from_env(cls):
         """Get CosmosInfo from environment variables."""
-        client = CosmosClient(
-            os.environ[ENV_COSMOS_URL_FIELD],
-            credential=os.environ[ENV_COSMOS_KEY_FIELD],
-        )
-        database = client.get_database_client(os.environ[ENV_COSMOS_DATABASE_FIELD])
-        container = database.get_container_client(
-            os.environ[ENV_COSMOS_CONTAINER_FIELD]
-        )
+        client = CosmosClient(ENV_COSMOS_URL, credential=ENV_COSMOS_KEY)
+        database = client.get_database_client(ENV_COSMOS_DATABASE)
+        container = database.get_container_client(ENV_COSMOS_CONTAINER)
 
         return cls(
             client,
             database,
             container,
-            os.environ[ENV_COSMOS_PARTITION_KEY_FIELD],
+            ENV_COSMOS_PARTITION_KEY,
         )
 
     def reset_costs(self) -> None:
