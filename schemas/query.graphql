@@ -3,10 +3,6 @@ Query a fixed cosmos db container.
 """
 type Query {
         """
-        Test field that returns Hello, <user string>    
-        """
-        hello: String
-        """
         Query the actual Cosmos Container. Can be queried based on ID or address.
         """
         container(id: ID, address: String): [Container!]
