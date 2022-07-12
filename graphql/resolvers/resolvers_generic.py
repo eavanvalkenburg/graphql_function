@@ -3,9 +3,9 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any
-from pytz import utc
 
 from ariadne.types import GraphQLResolveInfo
+from pytz import utc
 
 from ..const import COSMOS_FIELD_TS, ENV_COSMOS_PARTITION_KEY
 from ..cosmos import cosmos

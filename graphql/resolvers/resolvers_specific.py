@@ -4,9 +4,9 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 from typing import Any
-from pytz import timezone, utc
 
 from ariadne.types import GraphQLResolveInfo
+from pytz import timezone, utc
 
 from ..const import COSMOS_FIELD_TS
 

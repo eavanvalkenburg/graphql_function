@@ -1,7 +1,6 @@
 """Constants for GraphQL."""
-from typing import Final
 import os
-
+from typing import Final
 
 MIME_TYPE_TEXT_HTML: Final = "text/html"
 

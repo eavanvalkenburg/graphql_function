@@ -47,6 +47,7 @@ type Container implements CosmosSQL {
     _ts
   }
   costs
+  continuation
 }
 ```
 

@@ -2,8 +2,6 @@
 from __future__ import annotations
 
 import logging
-import functools
-from collections.abc import Awaitable
 from dataclasses import dataclass
 from typing import Any
 from uuid import uuid4
@@ -11,11 +9,11 @@ from uuid import uuid4
 from azure.cosmos.aio import ContainerProxy, CosmosClient, DatabaseProxy
 
 from .const import (
+    ENV_COSMOS_CONTAINER,
     ENV_COSMOS_DATABASE,
     ENV_COSMOS_KEY,
-    ENV_COSMOS_URL,
-    ENV_COSMOS_CONTAINER,
     ENV_COSMOS_PARTITION_KEY,
+    ENV_COSMOS_URL,
 )
 
 _LOGGER = logging.getLogger(__name__)
