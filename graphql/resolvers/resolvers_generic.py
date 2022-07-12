@@ -55,3 +55,10 @@ async def resolve_costs(
 ) -> int:
     """Resolve the costs field."""
     return cosmos.costs
+
+
+async def resolve_continuation(
+    obj: Any, info: GraphQLResolveInfo  # pylint: disable=unused-argument
+) -> int:
+    """Resolve the continuation field."""
+    return cosmos.continuation

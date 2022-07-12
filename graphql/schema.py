@@ -14,6 +14,7 @@ from ariadne import (
 
 from .const import (
     COSMOS_FIELD_COSTS,
+    COSMOS_FIELD_CONTINUATION,
     COSMOS_FIELD_PARTITION_KEY,
     COSMOS_FIELD_PARTITION_KEY_FIELD,
     COSMOS_FIELD_TIMESTAMP,
@@ -22,6 +23,7 @@ from .const import (
 from .resolvers import (
     resolve_cosmos_mutation,
     resolve_cosmos_query,
+    resolve_continuation,
     resolve_costs,
     resolve_partition_key,
     resolve_timestamp,
@@ -38,6 +40,7 @@ type_defs = load_schema_from_path("./schemas")
 query = QueryType()
 query.set_field("container", resolve_cosmos_query)
 query.set_field(COSMOS_FIELD_COSTS, resolve_costs)
+query.set_field(COSMOS_FIELD_CONTINUATION, resolve_continuation)
 
 mutation = MutationType()
 mutation.set_field("container", resolve_cosmos_mutation)
@@ -55,8 +58,10 @@ schema = make_executable_schema(type_defs, query, container, mutation)
 
 async def parse_query(func_req: HttpRequest) -> tuple[str, int]:
     """Wrap the graphql function."""
-    cosmos.reset_costs()
+    # cosmos.reset_costs()
     success, result = await graphql(schema, func_req.get_json(), context_value=func_req)
     if COSMOS_FIELD_COSTS in result["data"]:
         result["data"][COSMOS_FIELD_COSTS] = cosmos.costs
+    if COSMOS_FIELD_CONTINUATION in result["data"]:
+        result["data"][COSMOS_FIELD_CONTINUATION] = cosmos.continuation
     return json.dumps(result), (200 if success else 400)

@@ -4,6 +4,7 @@ from .resolvers_generic import (
     resolve_costs,
     resolve_partition_key,
     resolve_timestamp,
-    resolve_partition_key_field
+    resolve_partition_key_field,
+    resolve_continuation,
 )
 from .resolvers_specific import resolve_timestamp_timezone

@@ -1,6 +1,7 @@
 """Code to setup connection to CosmosDB."""
 from __future__ import annotations
 
+import logging
 import functools
 from collections.abc import Awaitable
 from dataclasses import dataclass
@@ -17,6 +18,8 @@ from .const import (
     ENV_COSMOS_PARTITION_KEY,
 )
 
+_LOGGER = logging.getLogger(__name__)
+
 
 @dataclass
 class CosmosInfo:
@@ -26,7 +29,7 @@ class CosmosInfo:
     database: DatabaseProxy
     container: ContainerProxy
     partition_key_field: str
-    costs: float = 0.0
+    last_response_headers: dict[str, str] = None
 
     @classmethod
     def from_env(cls):
@@ -42,46 +45,68 @@ class CosmosInfo:
             ENV_COSMOS_PARTITION_KEY,
         )
 
-    def reset_costs(self) -> None:
-        """Reset the costs."""
-        self.costs = 0.0
+    @property
+    def costs(self) -> float:
+        """Get the costs."""
+        if (
+            self.last_response_headers
+            and "x-ms-request-charge" in self.last_response_headers
+        ):
+            return float(self.last_response_headers["x-ms-request-charge"])
+        return 0.0
 
-    def update_costs(  # pylint: disable=no-self-argument
-        func: Awaitable[Any],
-    ) -> Awaitable[Any]:
-        """Decorate functions with this to store the costs."""
+    @property
+    def session_token(self) -> str | None:
+        """Get the session token."""
+        if (
+            self.last_response_headers
+            and "x-ms-session-token" in self.last_response_headers
+        ):
+            return self.last_response_headers["x-ms-session-token"]
+        return None
 
-        @functools.wraps(func)
-        async def wrapper(self: "CosmosInfo", *args, **kwargs):
-            """Wrapper for the function."""
-            value = await func(self, *args, **kwargs)  # pylint: disable=not-callable
-            if self.client.client_connection.last_response_headers:
-                self.costs += float(
-                    self.client.client_connection.last_response_headers[
-                        "x-ms-request-charge"
-                    ]
-                )
-            return value
+    @property
+    def continuation(self) -> str | None:
+        """Get the session token."""
+        if (
+            self.last_response_headers
+            and "x-ms-continuation" in self.last_response_headers
+        ):
+            return self.last_response_headers["x-ms-continuation"]
+        return None
 
-        return wrapper
+    def update_last_response(
+        self, last_response_headers: dict[str, str], *_: dict[str, Any]
+    ) -> None:
+        """Hook to update the last response."""
+        self.last_response_headers = last_response_headers
 
     # From this function onwards the specifics of your documents need to be implemented.
-    @update_costs
     async def query(self, **kwargs: Any) -> list[dict[str, Any]] | None:
         """Run a query against Cosmos."""
         item_id = kwargs.get("id")
         address = kwargs.get("address")
+        max_item_count = kwargs.get("max_item_count")
         partition_key = kwargs.get(self.partition_key_field)
 
         if item_id and partition_key:
             return [
                 await self.container.read_item(
-                    item=item_id, partition_key=partition_key
+                    item=item_id,
+                    partition_key=partition_key,
+                    session_token=self.session_token,
                 )
             ]
 
         if not item_id and not address:
-            return [item async for item in self.container.read_all_items()]
+            resp = self.container.read_all_items(
+                max_item_count=max_item_count,
+                session_token=self.session_token,
+                response_hook=self.update_last_response,
+                continuation=self.continuation,
+            )
+            first_page = await resp.by_page().__anext__()
+            return [item async for item in first_page]
 
         params = {
             "query": "SELECT * FROM c WHERE c.id = @id OR c.address = @address",
@@ -90,12 +115,18 @@ class CosmosInfo:
                 {"name": "@address", "value": address},
             ],
             "populate_query_metrics": True,
+            "max_item_count": max_item_count,
+            "session_token": self.session_token,
+            "enable_cross_partition_query": False,
+            "response_hook": self.update_last_response,
+            "continuation": self.continuation,
         }
         if partition_key:
             params["partition_key"] = partition_key
-        return [item async for item in self.container.query_items(**params)]
+        resp = self.container.query_items(**params)
+        first_page = await resp.by_page().__anext__()
+        return [item async for item in first_page]
 
-    @update_costs
     async def upsert(self, **kwargs: Any) -> dict[str, Any]:
         """Upsert an item in Cosmos."""
         new_item = kwargs.get("input")

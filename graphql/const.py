@@ -19,6 +19,7 @@ COSMOS_FIELD_ETAG: Final = "_etag"
 COSMOS_FIELD_TS: Final = "_ts"
 COSMOS_FIELD_ATTACHMENT: Final = "_attachments"
 COSMOS_FIELD_TIMESTAMP: Final = "timestamp"
+COSMOS_FIELD_CONTINUATION: Final = "continuation"
 
 ENV_COSMOS_URL = os.environ.get("CosmosURL")
 ENV_COSMOS_KEY = os.environ.get("CosmosKey")

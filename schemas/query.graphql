@@ -5,9 +5,13 @@ type Query {
         """
         Query the actual Cosmos Container. Can be queried based on ID or address.
         """
-        container(id: ID, address: String): [Container!]
+        container(id: ID, address: String, max_item_count: Int = 10, continuation: String = None): [Container!]
         """
         The RU costs of the Cosmos query.
         """
         costs: Float
+        """
+        The continuation token for a longer query.
+        """
+        continuation: String
     }
